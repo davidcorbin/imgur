@@ -5,7 +5,7 @@ function upload(file) {
 	fd.append("image", file);
 	fd.append("key", "6528448c258cff474ca9701c5bab6927");
 	var xhr = new XMLHttpRequest();
-	xhr.open("POST", "http://api.imgur.com/2/upload.json");
+	xhr.open("POST", "https://api.imgur.com/2/upload.json");
 	xhr.onload = function(){uploaded(JSON.parse(xhr.response))};
 	xhr.send(fd);
 }
