@@ -1,0 +1,38 @@
+body {
+	height:100vh;
+	width:100vw;
+    max-width:100%;
+    max-height:100%;
+	padding:0;
+	margin:0;
+}
+
+.upload {
+    height:100%;
+    width:100%;
+    padding:0;
+    margin:0;
+    background: #2dcb89;
+}
+
+.desc {
+    text-align: center;
+    color: #fff;
+    margin: 0;
+    font-family: Raleway, sans-serif;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.desc h1 {
+    font-weight: bold;
+    font-size: 2.5em;
+    margin: 0 0 1em;
+}
+
+.desc h2 {
+    font-weight: normal;
+    font-size: 1em;
+}
