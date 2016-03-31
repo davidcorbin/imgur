@@ -94,8 +94,50 @@ function changeMessage(content) {
 
 }
 
-window.onload = function () {
+
+
+
+
+
+
+
+(function(document, window, index) {
     // Stop pseudo clicking upload layer when github-corner is clicked
     document.getElementsByTagName("a")[0].addEventListener("click", function (e){e.stopPropagation();}, false);
 
-};
+    // Check if browser supports drag and drop
+    var supportsDrag = function() {
+        var div = document.createElement('div');
+        return (('draggable' in div) || ('ondragstart' in div && 'ondrop' in div)) && 'FormData' in window && 'FileReader' in window;
+    }();
+
+    if (supportsDrag) {
+
+        ['drag', 'dragstart', 'dragend', 'dragover', 'dragenter', 'dragleave', 'drop'].forEach(function(event) {
+            document.querySelector(".upload").addEventListener(event, function(e) {
+
+                // preventing the unwanted behaviours
+                e.preventDefault();
+                e.stopPropagation();
+            });
+        });
+        ['dragover', 'dragenter'].forEach(function(event) {
+            document.querySelector(".upload").addEventListener( event, function() {
+                this.classList.add("dragover");
+            });
+        });
+        ['dragleave', 'dragend', 'drop'].forEach(function(event) {
+            document.querySelector(".upload").addEventListener( event, function() {
+                this.classList.remove("dragover");
+            });
+        });
+        document.querySelector(".upload").addEventListener('drop', function(e) {
+            /*
+             * @TODO Add support for album upload
+             */
+            upload(e.dataTransfer.files[0]);
+        });
+
+    }
+
+})(document, window, 0);

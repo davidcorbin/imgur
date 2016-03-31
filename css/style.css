@@ -15,6 +15,12 @@ body {
     padding:0;
     margin:0;
     background: #2dcb89;
+    transition: background 0.3s;
+}
+
+.upload.dragover {
+    background: #32f1a0;
+    transition: background 0.3s;
 }
 
 .desc {
