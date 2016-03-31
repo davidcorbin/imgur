@@ -1,8 +1,19 @@
 function upload(file) {
+
+    // Check that file is an image
 	if (!file || !file.type.match(/image.*/)) return;
+
+    // Check that file size is less than 10 MB
+    if (file.size/1024/1024 >= 10) {
+        console.log("File is lager than 10 MB");
+        return;
+    }
+
 	uploading();
+
 	var fd = new FormData();
 	fd.append("image", file);
+
 	var xhr = new XMLHttpRequest();
 	xhr.open("POST", "https://api.imgur.com/3/image");
     xhr.setRequestHeader("Authorization", "Client-id f30578e81f80336");
@@ -17,6 +28,9 @@ function uploading() {
     document.querySelector("#link").textContent = "Uploading...";
 }
 
+/*
+ * Function called when image is done uploading 
+ */
 function uploaded(response) {
     var original = response.data.link;
     document.querySelector("#link").innerHTML = "<a href='"+original+"'>"+original+"</a>  <i class='fa fa-paperclip'></i>";
@@ -27,14 +41,18 @@ function uploaded(response) {
         event.stopPropagation();
     }, false);
 
+    // Copy link button
     document.querySelector("#link i").addEventListener('click', function(event) {
         copyTextToClipboard(document.querySelector("#link a").textContent);
 
         // Stop pseudo clicking upload layer when github-corner is clicked
         event.stopPropagation();
     }, false);
-}
 
+    document.querySelector(".desc img").src = original;
+
+
+}
 
 /*
  * Function to copy text to clipboard.
@@ -94,7 +112,12 @@ function changeMessage(content) {
 
 }
 
+/*
+ * Function called if there is an error with image upload
+ */
+function error(desc) {
 
+}
 
 
 

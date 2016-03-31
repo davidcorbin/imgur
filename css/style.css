@@ -34,6 +34,12 @@ body {
     transform: translate(-50%, -50%);
 }
 
+.desc img {
+    max-width: 50%;
+    max-height: 30%;
+    margin: auto;
+}
+
 .desc h1 {
     font-weight: bold;
     font-size: 2.5em;
