@@ -57,9 +57,8 @@ function uploaded(response) {
         event.stopPropagation();
     }, false);
 
+    // Display uploaded image below link
     document.querySelector(".desc img").src = original;
-
-
 }
 
 /*
@@ -129,10 +128,7 @@ function error(desc) {
 
 
 
-
-
-
-(function(document, window, index) {
+(function(document, window) {
     // Stop pseudo clicking upload layer when links are clicked
     document.querySelector("a").addEventListener("click", function (e){e.stopPropagation();}, false);
     document.querySelector("span a").addEventListener("click", function (e){e.stopPropagation();}, false);
@@ -172,4 +168,4 @@ function error(desc) {
 
     }
 
-})(document, window, 0);
+})(document, window);
