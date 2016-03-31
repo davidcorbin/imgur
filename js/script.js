@@ -102,8 +102,9 @@ function changeMessage(content) {
 
 
 (function(document, window, index) {
-    // Stop pseudo clicking upload layer when github-corner is clicked
-    document.getElementsByTagName("a")[0].addEventListener("click", function (e){e.stopPropagation();}, false);
+    // Stop pseudo clicking upload layer when links are clicked
+    document.querySelector("a").addEventListener("click", function (e){e.stopPropagation();}, false);
+    document.querySelector("span a").addEventListener("click", function (e){e.stopPropagation();}, false);
 
     // Check if browser supports drag and drop
     var supportsDrag = function() {
