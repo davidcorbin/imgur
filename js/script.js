@@ -1,3 +1,11 @@
+/*
+ * script.js for imgur upload http://github.com/daconex/imgur
+ * Author: David Corbin (daconex)
+ */
+
+/*
+ * Function to upload image to imgur
+ */
 function upload(file) {
 
     // Check that file is an image
