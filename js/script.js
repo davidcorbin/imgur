@@ -133,6 +133,16 @@ function error(desc) {
     document.querySelector("a").addEventListener("click", function (e){e.stopPropagation();}, false);
     document.querySelector("span a").addEventListener("click", function (e){e.stopPropagation();}, false);
 
+    // Create dialog to select image to upload
+    document.querySelector(".upload").addEventListener("click", function(){
+        document.querySelector('input').click();
+    }, false);
+
+    // After image is chosen, upload immediately
+    document.querySelector("input").addEventListener("change", function(){
+        upload(this.files[0]);
+    }, false);
+
     // Check if browser supports drag and drop
     var supportsDrag = function() {
         var div = document.createElement('div');
