@@ -122,6 +122,7 @@ function changeMessage(content) {
 /*
  * Function called if there is an error with image upload
  */
+
 function error(desc) {
 
 }
