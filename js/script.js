@@ -3,21 +3,32 @@
  * Author: David Corbin (daconex)
  */
 
-/*
- * Function to upload image to imgur
- */
-function upload(file) {
+"use strict";
 
+/*
+ * Function to determine whether to create album or just an individual image
+ */
+function upload(files, callback) {
     // Create album if more than one image
-    if (file.length > 1) {
-        album(file);
+    if (files.length > 1) {
+        album(files);
+    }
+    else {
+        verifyimage(files[0], callback);
+    }
+}
+
+/*
+ * Function to verify a file as much as possible before uploading it
+ */
+function verifyimage(file, callback) {
+    // Check that file is an image
+    if (!file || !file.type.match(/image.*/)) {
+        /*
+         * @TODO SHOW ERROR FOR FILE THATS NOT IMAGE
+         */
         return;
     }
-
-    file = file[0];
-
-    // Check that file is an image
-	if (!file || !file.type.match(/image.*/)) return;
 
     // Check that file size is less than 10 MB
     if (file.size/1024/1024 >= 10) {
@@ -26,56 +37,57 @@ function upload(file) {
          */
         return;
     }
-
-	uploading();
-
-	var fd = new FormData();
-	fd.append("image", file);
-
-	var xhr = new XMLHttpRequest();
-	xhr.open("POST", "https://api.imgur.com/3/image");
-    xhr.setRequestHeader("Authorization", "Client-id f30578e81f80336");
-	xhr.onload = function(){uploaded(JSON.parse(xhr.response))};
-	xhr.send(fd);
+    uploadimage(file, callback);
 }
 
 /*
- * Function to upload and create album
+ * Function to upload invidual image and return response
+ */
+function uploadimage(file, callback) {
+    uploading();
+    var fd = new FormData();
+    fd.append("image", file);
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "https://api.imgur.com/3/image");
+    xhr.setRequestHeader("Authorization", "Client-id f30578e81f80336");
+    xhr.onload = function(){
+        if (callback==null) {
+            uploaded(JSON.parse(xhr.response));
+        }
+        else {
+            callback(JSON.parse(xhr.response));
+        }
+    };
+    xhr.send(fd);
+}
+
+var num_of_files;
+/*
+ * Function to upload photos for an album
  */
 function album(files) {
-
+    num_of_files=files.length;
     for (var i=0; i<files.length; i++) {
         // Use function expression to keep individual XMLHttpRequest scope
         (function(i){
-
-            var fd = new FormData();
-            fd.append("image", files[i]);
-
-            var xhr = new XMLHttpRequest();
-            xhr.open("POST", "https://api.imgur.com/3/image");
-            xhr.setRequestHeader("Authorization", "Client-id f30578e81f80336");
-            xhr.onload = function(){
-                console.log(JSON.parse(xhr.response));
-                createalbum(JSON.parse(xhr.response).data.id, files.length);
-            };
-            xhr.send(fd);
-
+            verifyimage(files[i], createalbum);
         })(i);
     }
-
 }
 
 var img_ids = [];
-
-function createalbum(id, num_of_files) {
+/*
+ * Function to create albums from images that are received
+ */
+function createalbum(response) {
+    // Add images ids to array
+    var id = response.data.id;
     img_ids.push(id);
 
     // If all individual images have been uploaded and an album can be created
     if (img_ids.length == num_of_files) {
-        console.log(img_ids);
 
         var formdata = new FormData;
-        var arr = ['this', 'is', 'an', 'array'];
         for (var i = 0; i < img_ids.length; i++) {
             formdata.append('ids[]', img_ids[i]);
         }
@@ -84,10 +96,11 @@ function createalbum(id, num_of_files) {
         xhr.open("POST", "https://api.imgur.com/3/album");
         xhr.setRequestHeader("Authorization", "Client-id f30578e81f80336");
         xhr.onload = function(){
-            console.log(JSON.parse(xhr.response));
+            document.querySelector("#link").innerHTML = "<a target='_blank' href='http://imgur.com/a/"+JSON.parse(xhr.response).data.id+"'>http://imgur.com/a/"+JSON.parse(xhr.response).data.id+"</a>  <i class='fa fa-paperclip'></i>";
+            stoplinkprop("#link a");
+            setcopybutton();
         };
         xhr.send(formdata);
-
     }
 }
 
@@ -106,21 +119,24 @@ function uploaded(response) {
     document.querySelector("#link").innerHTML = "<a target='_blank' href='"+original+"'>"+original+"</a>  <i class='fa fa-paperclip'></i>";
     //document.querySelector("#link a").addEventListener("click", function (e){e.stopPropagation();}, false);
 
-    document.querySelector("#link a").addEventListener('click', function(event) {
-        // Stop pseudo clicking upload layer when github-corner is clicked
-        event.stopPropagation();
-    }, false);
-
-    // Copy link button
-    document.querySelector("#link i").addEventListener('click', function(event) {
-        copyTextToClipboard(document.querySelector("#link a").textContent);
-
-        // Stop pseudo clicking upload layer when github-corner is clicked
-        event.stopPropagation();
-    }, false);
+    stoplinkprop("#link a");
+    setcopybutton();
 
     // Display uploaded image below link
     document.querySelector(".desc img").src = original;
+}
+
+function setcopybutton() {
+    document.querySelector("#link i").addEventListener('click', function(event) {
+        copyTextToClipboard(document.querySelector("#link a").textContent);
+        event.stopPropagation();
+    }, false);
+}
+
+function stoplinkprop(el) {
+    document.querySelector(el).addEventListener('click', function(event) {
+        event.stopPropagation();
+    }, false);
 }
 
 /*
@@ -162,7 +178,7 @@ function copyTextToClipboard(text) {
         var msg = successful ? 'successful' : 'unsuccessful';
         console.log('Copying text command was ' + msg);
     } catch (err) {
-        console.log('Oops, unable to copy');
+        console.log('Unable to copy');
     }
 
     document.body.removeChild(textArea);
@@ -193,8 +209,8 @@ function error(desc) {
 
 (function(document, window) {
     // Stop pseudo clicking upload layer when links are clicked
-    document.querySelector("a").addEventListener("click", function (e){e.stopPropagation();}, false);
-    document.querySelector("span a").addEventListener("click", function (e){e.stopPropagation();}, false);
+    stoplinkprop("a");
+    stoplinkprop("span a");
 
     // Create dialog to select image to upload
     document.querySelector(".upload").addEventListener("click", function(){
@@ -203,7 +219,7 @@ function error(desc) {
 
     // After image is chosen, upload immediately
     document.querySelector("input").addEventListener("change", function(){
-        upload(this.files);
+        upload(this.files, null);
     }, false);
 
     // Check if browser supports drag and drop
@@ -213,7 +229,6 @@ function error(desc) {
     }();
 
     if (supportsDrag) {
-
         ['drag', 'dragstart', 'dragend', 'dragover', 'dragenter', 'dragleave', 'drop'].forEach(function(event) {
             document.querySelector(".upload").addEventListener(event, function(e) {
 
@@ -233,12 +248,8 @@ function error(desc) {
             });
         });
         document.querySelector(".upload").addEventListener('drop', function(e) {
-            /*
-             * @TODO Add support for album upload
-             */
-            upload(e.dataTransfer.files);
+            upload(e.dataTransfer.files, null);
         });
-
     }
 
 })(document, window);
