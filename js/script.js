@@ -8,12 +8,22 @@
  */
 function upload(file) {
 
+    // Create album if more than one image
+    if (file.length > 1) {
+        album(file);
+        return;
+    }
+
+    file = file[0];
+
     // Check that file is an image
 	if (!file || !file.type.match(/image.*/)) return;
 
     // Check that file size is less than 10 MB
     if (file.size/1024/1024 >= 10) {
-        console.log("File is lager than 10 MB");
+        /*
+         * @TODO SHOW ERROR FOR FILE THATS TOO LARGE
+         */
         return;
     }
 
@@ -30,10 +40,62 @@ function upload(file) {
 }
 
 /*
+ * Function to upload and create album
+ */
+function album(files) {
+
+    for (var i=0; i<files.length; i++) {
+        // Use function expression to keep individual XMLHttpRequest scope
+        (function(i){
+
+            var fd = new FormData();
+            fd.append("image", files[i]);
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "https://api.imgur.com/3/image");
+            xhr.setRequestHeader("Authorization", "Client-id f30578e81f80336");
+            xhr.onload = function(){
+                console.log(JSON.parse(xhr.response));
+                createalbum(JSON.parse(xhr.response).data.id, files.length);
+            };
+            xhr.send(fd);
+
+        })(i);
+    }
+
+}
+
+var img_ids = [];
+
+function createalbum(id, num_of_files) {
+    img_ids.push(id);
+
+    // If all individual images have been uploaded and an album can be created
+    if (img_ids.length == num_of_files) {
+        console.log(img_ids);
+
+        var formdata = new FormData;
+        var arr = ['this', 'is', 'an', 'array'];
+        for (var i = 0; i < img_ids.length; i++) {
+            formdata.append('ids[]', img_ids[i]);
+        }
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "https://api.imgur.com/3/album");
+        xhr.setRequestHeader("Authorization", "Client-id f30578e81f80336");
+        xhr.onload = function(){
+            console.log(JSON.parse(xhr.response));
+        };
+        xhr.send(formdata);
+
+    }
+}
+
+/*
  * Function called when image starts uploading
  */
 function uploading() {
-    document.querySelector("#link").textContent = "Uploading...";
+    document.querySelector("#link").innerHTML = "<i class='fa fa-spinner fa-spin' style='font-size: 2em;'></i>";
 }
 
 /*
@@ -41,7 +103,7 @@ function uploading() {
  */
 function uploaded(response) {
     var original = response.data.link;
-    document.querySelector("#link").innerHTML = "<a href='"+original+"'>"+original+"</a>  <i class='fa fa-paperclip'></i>";
+    document.querySelector("#link").innerHTML = "<a target='_blank' href='"+original+"'>"+original+"</a>  <i class='fa fa-paperclip'></i>";
     //document.querySelector("#link a").addEventListener("click", function (e){e.stopPropagation();}, false);
 
     document.querySelector("#link a").addEventListener('click', function(event) {
@@ -141,7 +203,7 @@ function error(desc) {
 
     // After image is chosen, upload immediately
     document.querySelector("input").addEventListener("change", function(){
-        upload(this.files[0]);
+        upload(this.files);
     }, false);
 
     // Check if browser supports drag and drop
@@ -174,7 +236,7 @@ function error(desc) {
             /*
              * @TODO Add support for album upload
              */
-            upload(e.dataTransfer.files[0]);
+            upload(e.dataTransfer.files);
         });
 
     }
