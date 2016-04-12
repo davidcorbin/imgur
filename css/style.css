@@ -63,7 +63,11 @@ body {
     font-size: 5vh;
     margin: 0;
     color: #176b48;
-    padding: 10vh 0 0;
+    padding: 10vh 10vh 0;
+}
+
+.desc h2 a {
+    color: #145a3d;
 }
 
 .desc h2 a:link {
