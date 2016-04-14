@@ -108,7 +108,7 @@ body {
 
 span.author {
     position: absolute;
-    vertical-align: bottom;
+    bottom: 0;
     right: 0;
     color: #1b7b53;
     font-size: 0.8em;
