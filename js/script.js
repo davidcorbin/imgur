@@ -34,7 +34,7 @@ function verifyimage(file, callback) {
     // Check that file size is less than 10 MB
     if (file.size/1024/1024 >= 10) {
         console.log("File too large to upload");
-        document.querySelector("#link").innerHTML = "The image is too large to upload to imgur (10MB max). <a traget='_blank' href='https://compressor.io/'>Compress</a> and retry.";
+        document.querySelector("#link").innerHTML = "The image is too large to upload to imgur (10MB max). <a target='_blank' href='https://compressor.io/'>Compress</a> and retry.";
         stoplinkprop("#link a");
         return;
     }
