@@ -102,6 +102,9 @@ function createalbum(response) {
         xhr.setRequestHeader("Authorization", "Client-id f30578e81f80336");
         xhr.onload = function(){
             document.querySelector("#link").innerHTML = "<a target='_blank' href='http://imgur.com/a/"+JSON.parse(xhr.response).data.id+"'>http://imgur.com/a/"+JSON.parse(xhr.response).data.id+"</a>  <i class='fa fa-paperclip'></i>";
+            // Reset vars
+            img_ids = [];
+            num_of_files = null;
             stoplinkprop("#link a");
             setcopybutton();
         };
