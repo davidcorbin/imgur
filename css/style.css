@@ -43,6 +43,11 @@ body {
         font-size: 80%;
     }
 }
+@media screen and (max-width: 320px) {
+    html {
+        font-size: 60%;
+    }
+}
 
 .header h1 {
     color: #1b7b53;
@@ -72,6 +77,15 @@ body {
     padding: 3rem 3rem 0;
 }
 
+@media screen and (max-width: 490px) {
+    .desc h2 a {
+        font-size: 1rem;
+    }
+    .desc h2 i:hover {
+        font-size: 1rem;
+    }
+}
+
 .desc h2 a {
     color: #145a3d;
 }
@@ -94,7 +108,7 @@ body {
 
 span.author {
     position: absolute;
-    bottom: 0;
+    vertical-align: bottom;
     right: 0;
     color: #1b7b53;
     font-size: 0.8em;
