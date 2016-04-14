@@ -25,9 +25,7 @@ function verifyimage(file, callback) {
     // Check that file is an image
     if (!file || !file.type.match(/image.*/)) {
         console.log("File not image");
-        /*
-         * @TODO SHOW ERROR FOR FILE THATS NOT IMAGE
-         */
+        document.querySelector("#link").innerHTML = "The file you're trying to upload is not an image.";
         return;
     }
 
@@ -52,6 +50,12 @@ function uploadimage(file, callback) {
     xhr.open("POST", "https://api.imgur.com/3/image");
     xhr.setRequestHeader("Authorization", "Client-id f30578e81f80336");
     xhr.onload = function(){
+        console.log(JSON.parse(xhr.response));
+        // Check for error from imgur
+        if (JSON.parse(xhr.response).data.error) {
+            document.querySelector("#link").innerHTML = JSON.parse(xhr.response).data.error;
+            return;
+        }
         if (callback==null) {
             uploaded(JSON.parse(xhr.response));
         }
