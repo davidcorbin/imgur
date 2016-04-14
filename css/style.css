@@ -25,6 +25,7 @@ body {
     margin:0;
     background: #2dcb89;
     transition: background 0.3s;
+    cursor: pointer;
 }
 
 .upload.dragover {
@@ -34,14 +35,19 @@ body {
 
 .header {
     text-align: center;
-    height: 40vh;
     background: #29bb7e;
+}
+
+@media screen and (max-width: 768px) {
+    html {
+        font-size: 80%;
+    }
 }
 
 .header h1 {
     color: #1b7b53;
-    font-size: 10vh;
-    padding: 10vh 0 0;
+    font-size: 4rem;
+    padding: 3rem 0 0;
     margin: 0 0 0;
     font-family: Gotham Rounded, sans-serif;
 }
@@ -49,8 +55,8 @@ body {
 .header h2 {
     color: #1e8b5d;
     margin: 0;
-    font-size: 5vh;
-    padding: 0 0 10vh;
+    font-size: 2rem;
+    padding: 0 1rem 3rem;
 }
 
 .desc {
@@ -60,10 +66,10 @@ body {
 }
 
 .desc h2 {
-    font-size: 5vh;
+    font-size: 2rem;
     margin: 0;
     color: #176b48;
-    padding: 10vh 10vh 0;
+    padding: 3rem 3rem 0;
 }
 
 .desc h2 a {

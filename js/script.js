@@ -184,7 +184,9 @@ function copyTextToClipboard(text) {
 
     document.body.removeChild(textArea);
 
-    changeMessage("Copied!");
+    // Switch icon from paperclip to checkmark
+    document.querySelector("#link i").classList.remove("fa-paperclip");
+    document.querySelector("#link i").classList.add("fa-check");
 }
 
 
